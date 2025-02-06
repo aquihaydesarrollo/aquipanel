@@ -3,6 +3,14 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sidebar } from '@/components/ui/sidebar';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -21,6 +29,8 @@ export default function EditClient() {
     socialReason: '',
     employees: '',
     website: '',
+    isActive: true,
+    role: '',
   });
 
   const [activeTab, setActiveTab] = useState('basic');
@@ -94,6 +104,31 @@ export default function EditClient() {
                         onChange={(e) => setClientData({ ...clientData, email: e.target.value })}
                         className="border rounded p-2"
                       />
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        id="isActive"
+                        checked={clientData.isActive}
+                        onCheckedChange={(checked) => setClientData({ ...clientData, isActive: checked })}
+                      />
+                      <Label htmlFor="isActive">Cliente Activo</Label>
+                    </div>
+                    <div>
+                      <Label htmlFor="role">Rol del Cliente</Label>
+                      <Select
+                        value={clientData.role}
+                        onValueChange={(value) => setClientData({ ...clientData, role: value })}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Seleccionar rol" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="admin">Administrador</SelectItem>
+                          <SelectItem value="manager">Gestor</SelectItem>
+                          <SelectItem value="user">Usuario</SelectItem>
+                          <SelectItem value="guest">Invitado</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                   <Button type="submit" className="bg-blue-500 text-white rounded p-2">Guardar Cambios</Button>
