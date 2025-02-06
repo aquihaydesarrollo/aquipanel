@@ -31,6 +31,12 @@ export default function EditClient() {
     website: '',
     isActive: true,
     role: '',
+    cif: '',
+    numEmpleados: '',
+    direccion: '',
+    telefono: '',
+    sector: '',
+    fechaFundacion: '',
   });
 
   const [activeTab, setActiveTab] = useState('basic');
@@ -186,11 +192,68 @@ export default function EditClient() {
               <TabsContent value="company">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="employees">Número de Empleados</Label>
+                    <Label htmlFor="cif">CIF:</Label>
                     <Input
-                      id="employees"
-                      value={clientData.employees}
-                      onChange={(e) => setClientData({ ...clientData, employees: e.target.value })}
+                      id="cif"
+                      value={clientData.cif}
+                      onChange={(e) => setClientData({ ...clientData, cif: e.target.value })}
+                      className="border rounded p-2"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="numEmpleados">Número de empleados:</Label>
+                    <Input
+                      id="numEmpleados"
+                      type="number"
+                      value={clientData.numEmpleados}
+                      onChange={(e) => setClientData({ ...clientData, numEmpleados: e.target.value })}
+                      className="border rounded p-2"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="direccion">Dirección:</Label>
+                    <Input
+                      id="direccion"
+                      value={clientData.direccion}
+                      onChange={(e) => setClientData({ ...clientData, direccion: e.target.value })}
+                      className="border rounded p-2"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="telefono">Teléfono:</Label>
+                    <Input
+                      id="telefono"
+                      value={clientData.telefono}
+                      onChange={(e) => setClientData({ ...clientData, telefono: e.target.value })}
+                      className="border rounded p-2"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="email">Correo Electrónico:</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={clientData.email}
+                      onChange={(e) => setClientData({ ...clientData, email: e.target.value })}
+                      className="border rounded p-2"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="sector">Sector de Actividad:</Label>
+                    <Input
+                      id="sector"
+                      value={clientData.sector}
+                      onChange={(e) => setClientData({ ...clientData, sector: e.target.value })}
+                      className="border rounded p-2"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="fechaFundacion">Fecha de Fundación:</Label>
+                    <Input
+                      id="fechaFundacion"
+                      type="date"
+                      value={clientData.fechaFundacion}
+                      onChange={(e) => setClientData({ ...clientData, fechaFundacion: e.target.value })}
                       className="border rounded p-2"
                     />
                   </div>
