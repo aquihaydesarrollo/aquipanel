@@ -1,27 +1,54 @@
 import { Sidebar } from '@/components/ui/sidebar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import cn from 'classnames';
 
 export default function ClientList() {
-  const [clients, setClients] = useState([
-    { id: 1, name: 'Cliente 1', phone: '123456789', nif: 'NIF123', email: 'cliente1@email.com', address: 'Calle 1', postalCode: '28001', municipality: 'Madrid', socialReason: 'Razón 1', employees: 10, website: 'www.cliente1.com' },
-    { id: 2, name: 'Cliente 2', phone: '987654321', nif: 'NIF456', email: 'cliente2@email.com', address: 'Calle 2', postalCode: '28002', municipality: 'Madrid', socialReason: 'Razón 2', employees: 20, website: 'www.cliente2.com' },
-    { id: 3, name: 'Cliente 3', phone: '456789123', nif: 'NIF789', email: 'cliente3@email.com', address: 'Calle 3', postalCode: '28003', municipality: 'Madrid', socialReason: 'Razón 3', employees: 30, website: 'www.cliente3.com' },
-  ]);
-
+  const [clients, setClients] = useState([]);
   const [filter, setFilter] = useState({ name: '', phone: '', nif: '' });
+  const navigate = useNavigate();
 
-  const filteredClients = clients.filter(client => 
+  useEffect(() => {
+    const storedData = localStorage.getItem('clientData');
+    if (!storedData) {
+        const initialClients = [
+            { id: 1, name: 'Cliente 1', phone: '123456789', nif: 'NIF123', email: 'cliente1@email.com', address: 'Calle 1', postalCode: '28001', municipality: 'Madrid', socialReason: 'Razón 1', employees: 10, website: 'www.cliente1.com' },
+            { id: 2, name: 'Cliente 2', phone: '987654321', nif: 'NIF456', email: 'cliente2@email.com', address: 'Calle 2', postalCode: '28002', municipality: 'Madrid', socialReason: 'Razón 2', employees: 20, website: 'www.cliente2.com' },
+            { id: 3, name: 'Cliente 3', phone: '456789123', nif: 'NIF789', email: 'cliente3@email.com', address: 'Calle 3', postalCode: '28003', municipality: 'Madrid', socialReason: 'Razón 3', employees: 30, website: 'www.cliente3.com' },
+        ];
+        localStorage.setItem('clientData', JSON.stringify(initialClients));
+        setClients(initialClients);
+    }
+    else {
+        const parsedData = JSON.parse(storedData);
+        if (Array.isArray(parsedData)) {
+            setClients(parsedData);
+        } else {
+            console.error('Los datos de clientes no son un array:', parsedData);
+        }
+    }
+  }, []);
+
+  const filteredClients = Array.isArray(clients) ? clients.filter(client => 
     client.name.toLowerCase().includes(filter.name.toLowerCase()) &&
-    client.phone.includes(filter.phone) &&
-    client.nif.includes(filter.nif)
-  );
+    (filter.phone ? client.phone.includes(filter.phone) : true) &&
+    (filter.nif ? client.nif.includes(filter.nif) : true)
+  ) : [];
 
   const handleDelete = (id) => {
-    // Implementar lógica para eliminar un cliente
+    const storedData = localStorage.getItem('clientData');
+    if (storedData) {
+      const clients = JSON.parse(storedData);
+      if (Array.isArray(clients)) {
+        const updatedClients = clients.filter(client => client.id !== id);
+        localStorage.setItem('clientData', JSON.stringify(updatedClients));
+        setClients(updatedClients);
+      } else {
+        console.error('Los datos de clientes no son un array:', clients);
+      }
+    }
   };
 
   return (
@@ -61,6 +88,9 @@ export default function ClientList() {
               />
               <Button variant="outline" className="mr-2">Importar CSV</Button>
               <Button variant="outline">Importar espoCRM</Button>
+              <Link to="/add-client">
+                <Button variant="outline">Añadir Nuevo Cliente</Button>
+              </Link>
             </div>
             <table className="min-w-full divide-y divide-gray-200 w-full">
               <thead className={cn("bg-gray-50", "dark:bg-gray-800")}>  

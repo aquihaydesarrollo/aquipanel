@@ -39,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var pg_1 = require("pg");
 var client = new pg_1.Client({
     host: 'hostybee.com',
-    port: 53998, // Cambiado a 53998
+    port: 23992,
     user: 'postgres',
     password: 'postgres',
     database: 'aquipanel'
@@ -72,39 +72,11 @@ function initDatabase() {
                 case 6:
                     // Cambiar a la nueva base de datos
                     _a.sent();
-                    client = new pg_1.Client({
-                        host: 'hostybee.com',
-                        port: 53998,
-                        user: 'postgres',
-                        password: 'postgres',
-                        database: 'aquipanel'
-                    });
+                    client.database = 'aquipanel'; // Cambiar la base de datos
                     return [4 /*yield*/, client.connect()];
                 case 7:
                     _a.sent();
-                    createTableQuery = `
-                        CREATE TABLE IF NOT EXISTS clients (
-                            id SERIAL PRIMARY KEY,
-                            name VARCHAR(255),
-                            phone VARCHAR(20),
-                            nif VARCHAR(20),
-                            email VARCHAR(255),
-                            address VARCHAR(255),
-                            postalCode VARCHAR(20),
-                            municipality VARCHAR(100),
-                            socialReason VARCHAR(255),
-                            employees INT,
-                            website VARCHAR(255),
-                            isActive BOOLEAN,
-                            role VARCHAR(100),
-                            cif VARCHAR(20),
-                            numEmpleados INT,
-                            direccion VARCHAR(255),
-                            telefono VARCHAR(20),
-                            sector VARCHAR(100),
-                            fecha_fundacion DATE
-                        );
-                    `;
+                    createTableQuery = "\n            CREATE TABLE IF NOT EXISTS clients (\n                id SERIAL PRIMARY KEY,\n                cif VARCHAR(20),\n                num_empleados INT,\n                direccion VARCHAR(255),\n                telefono VARCHAR(20),\n                email VARCHAR(255),\n                sector VARCHAR(100),\n                fecha_fundacion DATE\n            );\n        ";
                     return [4 /*yield*/, client.query(createTableQuery)];
                 case 8:
                     _a.sent();

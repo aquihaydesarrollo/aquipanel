@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard'
 import Settings from './pages/Settings'
 import ClientList from './pages/ClientList'
 import EditClient from './pages/EditClient'
+import AddClient from './pages/AddClient'
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
   },
   {
     path: "/edit-client/:id",
+    element: <EditClient />, 
+  },
+  {
+    path: "/add-client",
     element: <EditClient />, 
   },
 ])

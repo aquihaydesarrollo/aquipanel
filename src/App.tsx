@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "./components/ui/card"
 import { Server, Shield, Clock } from "lucide-react"
+import { Outlet } from 'react-router-dom';
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
           sistema y más.
         </p>
         <AuthDialog />
+        <Outlet />
       </div>
     </div>
   )

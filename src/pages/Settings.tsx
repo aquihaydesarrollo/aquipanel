@@ -12,24 +12,54 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { useTheme } from '@/lib/theme-provider'
 import { User, Palette, Shield, AlertTriangle } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import cn from 'classnames'
 
 export default function Settings() {
   const { theme, setTheme } = useTheme()
-  const [userData, setUserData] = useState({
-    name: 'Usuario',
-    email: 'usuario@email.com',
-    avatar: 'https://github.com/shadcn.png',
-    currentPassword: '',
-    newPassword: '',
-    role: 'client'
+  const [userData, setUserData] = useState(() => {
+    const storedUserData = localStorage.getItem('userData');
+    return storedUserData ? JSON.parse(storedUserData) : {
+      name: 'Usuario',
+      email: 'usuario@email.com',
+      avatar: 'https://github.com/shadcn.png',
+      currentPassword: '',
+      newPassword: '',
+      role: 'client'
+    };
   })
+  const [notification, setNotification] = useState('')
+
+  useEffect(() => {
+    const storedUserData = localStorage.getItem('userData');
+    if (storedUserData) {
+        const parsedData = JSON.parse(storedUserData);
+        setUserData(parsedData);
+        console.log('Datos cargados desde localStorage:', parsedData);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('userData', JSON.stringify(userData))
+  }, [userData])
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem('theme')
+    if (storedTheme) {
+      setTheme(storedTheme)
+    }
+  }, [])
 
   const handleUserUpdate = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('Actualizando usuario:', userData)
+    e.preventDefault();
+    console.log('Datos antes de guardar:', userData);
+    localStorage.setItem('userData', JSON.stringify(userData));
+    console.log('Datos guardados en localStorage:', localStorage.getItem('userData'));
+    const storedData = localStorage.getItem('userData');
+    console.log('Contenido de localStorage después de guardar:', storedData);
+    setNotification('Los datos del usuario se han guardado correctamente.');
+    window.location.reload();
   }
 
   return (
@@ -88,7 +118,10 @@ export default function Settings() {
                     <Input
                       id="name"
                       value={userData.name}
-                      onChange={(e) => setUserData({...userData, name: e.target.value})}
+                      onChange={(e) => {
+                        console.log('Nombre cambiado:', e.target.value);
+                        setUserData({...userData, name: e.target.value});
+                      }}
                     />
                   </div>
                   <div className="space-y-2">
@@ -97,7 +130,10 @@ export default function Settings() {
                       id="email"
                       type="email"
                       value={userData.email}
-                      onChange={(e) => setUserData({...userData, email: e.target.value})}
+                      onChange={(e) => {
+                        console.log('Email cambiado:', e.target.value);
+                        setUserData({...userData, email: e.target.value});
+                      }}
                     />
                   </div>
                   <div className="space-y-2">
@@ -105,7 +141,10 @@ export default function Settings() {
                     <Input
                       id="avatar"
                       value={userData.avatar}
-                      onChange={(e) => setUserData({...userData, avatar: e.target.value})}
+                      onChange={(e) => {
+                        console.log('Avatar cambiado:', e.target.value);
+                        setUserData({...userData, avatar: e.target.value});
+                      }}
                     />
                   </div>
                   <div className="space-y-2">
@@ -113,7 +152,10 @@ export default function Settings() {
                     <select
                       id="role"
                       value={userData.role}
-                      onChange={(e) => setUserData({...userData, role: e.target.value})}
+                      onChange={(e) => {
+                        console.log('Rol cambiado:', e.target.value);
+                        setUserData({...userData, role: e.target.value});
+                      }}
                       className="border rounded-md p-2"
                     >
                       <option value="admin">Administrador</option>
@@ -139,6 +181,7 @@ export default function Settings() {
                     />
                   </div>
                   <Button type="submit">Guardar Cambios</Button>
+                  {notification && <div className="text-green-500 mt-4">{notification}</div>}
                 </form>
               </CardContent>
             </Card>
@@ -155,7 +198,10 @@ export default function Settings() {
                   <Switch 
                     id="theme-toggle"
                     checked={theme === "dark"}
-                    onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+                    onCheckedChange={(checked) => {
+                      setTheme(checked ? "dark" : "light");
+                      localStorage.setItem('theme', checked ? "dark" : "light");
+                    }}
                   />
                 </div>
               </CardContent>

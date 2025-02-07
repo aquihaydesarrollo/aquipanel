@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -18,42 +18,95 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 export default function EditClient() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [clientData, setClientData] = useState({
-    name: '',
-    phone: '',
-    nif: '',
-    email: '',
-    address: '',
-    postalCode: '',
-    municipality: '',
-    socialReason: '',
-    employees: '',
-    website: '',
-    isActive: true,
-    role: '',
-    cif: '',
-    numEmpleados: '',
-    direccion: '',
-    telefono: '',
-    sector: '',
-    fechaFundacion: '',
+  const clientId = id ? parseInt(id) : null;
+  const [clientData, setClientData] = useState(() => {
+    if (clientId) {
+      const storedData = localStorage.getItem('clientData');
+      if (storedData) {
+        const clients = JSON.parse(storedData);
+        const client = clients.find(c => c.id === clientId);
+        return client ? client : {
+          id: Date.now(), // Generar un nuevo ID basado en la fecha actual
+          name: '',
+          phone: '',
+          nif: '',
+          email: '',
+          address: '',
+          postalCode: '',
+          municipality: '',
+          socialReason: '',
+          employees: '',
+          website: '',
+          isActive: true,
+          role: '',
+          cif: '',
+          numEmpleados: '',
+          direccion: '',
+          telefono: '',
+          sector: '',
+          fechaFundacion: '',
+        };
+      }
+    }
+    return {
+      id: Date.now(), // Generar un nuevo ID basado en la fecha actual
+      name: '',
+      phone: '',
+      nif: '',
+      email: '',
+      address: '',
+      postalCode: '',
+      municipality: '',
+      socialReason: '',
+      employees: '',
+      website: '',
+      isActive: true,
+      role: '',
+      cif: '',
+      numEmpleados: '',
+      direccion: '',
+      telefono: '',
+      sector: '',
+      fechaFundacion: '',
+    };
   });
 
   const [activeTab, setActiveTab] = useState('basic');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [notification, setNotification] = useState('');
 
-  // Simulando la carga de datos del cliente
-  // En un caso real, aquí harías una llamada a la API para obtener los datos del cliente por ID
-  // useEffect(() => {
-  //   fetch(`/api/clients/${id}`)
-  //     .then(response => response.json())
-  //     .then(data => setClientData(data));
-  // }, [id]);
+  useEffect(() => {
+    const storedData = localStorage.getItem('clientData');
+    if (storedData) {
+      const clients = JSON.parse(storedData);
+      const client = clients.find(c => c.id === clientId);
+      if (client) {
+        setClientData(client);
+      }
+    }
+  }, [clientId]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aquí iría la lógica para actualizar el cliente
-    // fetch(`/api/clients/${id}`, { method: 'PUT', body: JSON.stringify(clientData) });
-    navigate('/client-list'); // Redirigir a la lista de clientes después de guardar
+    console.log('Datos del cliente antes de guardar:', clientData);
+    const storedData = localStorage.getItem('clientData');
+    let clients = [];
+    if (storedData) {
+      clients = JSON.parse(storedData);
+    }
+    const index = clients.findIndex(c => c.id === clientId);
+    if (index !== -1) {
+      clients[index] = clientData;
+    } else {
+      clients.push(clientData);
+    }
+    localStorage.setItem('clientData', JSON.stringify(clients));
+    setNotification('Los datos se han guardado correctamente.');
+  };
+
+  const handleSaveAndBack = () => {
+    handleSubmit();
+    navigate('/client-list');
   };
 
   return (
@@ -65,7 +118,7 @@ export default function EditClient() {
             <CardTitle>Editar Cliente</CardTitle>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="basic" className="space-y-6">
+            <Tabs defaultValue="basic" className="space-y-6 border-b border-gray-200">
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="basic" onClick={() => setActiveTab('basic')}>Información Básica</TabsTrigger>
                 <TabsTrigger value="details" onClick={() => setActiveTab('details')}>Detalles Adicionales</TabsTrigger>
@@ -124,6 +177,7 @@ export default function EditClient() {
                       <Select
                         value={clientData.role}
                         onValueChange={(value) => setClientData({ ...clientData, role: value })}
+                        className="border rounded p-2 bg-white"
                       >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Seleccionar rol" />
@@ -137,7 +191,6 @@ export default function EditClient() {
                       </Select>
                     </div>
                   </div>
-                  <Button type="submit" className="bg-blue-500 text-white rounded p-2">Guardar Cambios</Button>
                 </form>
               </TabsContent>
               <TabsContent value="details">
@@ -260,6 +313,13 @@ export default function EditClient() {
                 </div>
               </TabsContent>
             </Tabs>
+            <div className="space-y-4">
+              {notification && <div className="text-green-500 mt-4">{notification}</div>}
+              <div className="flex space-x-4 mt-4">
+                <Button type="button" className="bg-blue-500 text-white rounded p-2 hover:bg-blue-600" onClick={handleSubmit}>Guardar Cambios</Button>
+                <Button type="button" className="bg-gray-500 text-white rounded p-2 hover:bg-gray-600" onClick={(e) => { handleSubmit(e); navigate('/client-list'); }}>Guardar y Volver</Button>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </main>
