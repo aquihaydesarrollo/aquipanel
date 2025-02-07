@@ -119,10 +119,10 @@ export default function EditClient() {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="basic" className="space-y-6 border-b border-gray-200">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="basic" onClick={() => setActiveTab('basic')}>Información Básica</TabsTrigger>
-                <TabsTrigger value="details" onClick={() => setActiveTab('details')}>Detalles Adicionales</TabsTrigger>
-                <TabsTrigger value="company" onClick={() => setActiveTab('company')}>Datos Empresa</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-3 border-b border-gray-300">
+                <TabsTrigger value="basic" className={`p-4 ${activeTab === 'basic' ? 'bg-gray-200' : 'bg-transparent'} hover:bg-gray-200 transition duration-200`} onClick={() => setActiveTab('basic')}>Información Básica</TabsTrigger>
+                <TabsTrigger value="details" className={`p-4 ${activeTab === 'details' ? 'bg-gray-200' : 'bg-transparent'} hover:bg-gray-200 transition duration-200`} onClick={() => setActiveTab('details')}>Detalles Adicionales</TabsTrigger>
+                <TabsTrigger value="company" className={`p-4 ${activeTab === 'company' ? 'bg-gray-200' : 'bg-transparent'} hover:bg-gray-200 transition duration-200`} onClick={() => setActiveTab('company')}>Datos Empresa</TabsTrigger>
               </TabsList>
               <TabsContent value="basic">
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -316,8 +316,8 @@ export default function EditClient() {
             <div className="space-y-4">
               {notification && <div className="text-green-500 mt-4">{notification}</div>}
               <div className="flex space-x-4 mt-4">
-                <Button type="button" className="bg-blue-500 text-white rounded p-2 hover:bg-blue-600" onClick={handleSubmit}>Guardar Cambios</Button>
-                <Button type="button" className="bg-gray-500 text-white rounded p-2 hover:bg-gray-600" onClick={(e) => { handleSubmit(e); navigate('/client-list'); }}>Guardar y Volver</Button>
+                <Button className="text-white bg-gray-800 rounded p-2 hover:bg-gray-700 transition duration-200" onClick={handleSubmit}>Guardar Cambios</Button>
+                <Button className="text-white bg-gray-800 rounded p-2 hover:bg-gray-700 transition duration-200" onClick={(e) => { handleSubmit(e); navigate('/client-list'); }}>Guardar y Volver</Button>
               </div>
             </div>
           </CardContent>

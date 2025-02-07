@@ -180,8 +180,8 @@ export default function Settings() {
                       onChange={(e) => setUserData({...userData, newPassword: e.target.value})}
                     />
                   </div>
-                  <Button type="submit">Guardar Cambios</Button>
-                  {notification && <div className="text-green-500 mt-4">{notification}</div>}
+                  <Button type="submit" className="bg-blue-500 text-white rounded p-2 hover:bg-blue-600 transition duration-200">Guardar Cambios</Button>
+                  {notification && <div className="bg-green-100 text-green-700 p-2 rounded mt-4">{notification}</div>}
                 </form>
               </CardContent>
             </Card>

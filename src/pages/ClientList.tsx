@@ -51,6 +51,28 @@ export default function ClientList() {
     }
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Datos del cliente antes de guardar:', clientData);
+    const storedData = localStorage.getItem('clientData');
+    let clients = [];
+    if (storedData) {
+      clients = JSON.parse(storedData);
+    }
+    // Generar un nuevo ID si no existe
+    if (!clientData.id) {
+      clientData.id = Date.now(); // Generar un nuevo ID basado en la fecha actual
+    }
+    const index = clients.findIndex(c => c.id === clientData.id);
+    if (index !== -1) {
+      clients[index] = clientData;
+    } else {
+      clients.push(clientData);
+    }
+    localStorage.setItem('clientData', JSON.stringify(clients));
+    setNotification('Los datos se han guardado correctamente.');
+  };
+
   return (
     <div className="flex">
       <Sidebar />
@@ -64,7 +86,7 @@ export default function ClientList() {
             <CardTitle>Clientes</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="mb-4 flex items-center">
+            <div className="flex justify-between items-center mb-4">
               <input
                 type="text"
                 placeholder="Filtrar por nombre"
@@ -86,39 +108,41 @@ export default function ClientList() {
                 onChange={(e) => setFilter({ ...filter, nif: e.target.value })}
                 className={cn("border rounded p-2 mr-2", "dark:bg-gray-800 dark:border-gray-700 dark:text-white")}
               />
-              <Button variant="outline" className="mr-2">Importar CSV</Button>
-              <Button variant="outline">Importar espoCRM</Button>
+              <Button className="text-white bg-gray-800 rounded p-2 hover:bg-gray-700 transition duration-200">Importar CSV</Button>
+              <Button className="text-white bg-gray-800 rounded p-2 hover:bg-gray-700 transition duration-200">Importar espoCRM</Button>
               <Link to="/add-client">
-                <Button variant="outline">Añadir Nuevo Cliente</Button>
+                <Button className="text-white bg-gray-800 rounded p-2 hover:bg-gray-700 transition duration-200">Añadir Nuevo Cliente</Button>
               </Link>
             </div>
-            <table className="min-w-full divide-y divide-gray-200 w-full">
-              <thead className={cn("bg-gray-50", "dark:bg-gray-800")}>  
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIF</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Correo Electrónico</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-                </tr>
-              </thead>
-              <tbody className={cn("bg-white divide-y divide-gray-200", "dark:bg-gray-900 dark:divide-gray-700")}>  
-                {filteredClients.map(client => (
-                  <tr key={client.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">{client.name}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{client.phone}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{client.nif}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{client.email}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <Link to={`/edit-client/${client.id}`}> 
-                        <Button variant="outline">✏️ Editar</Button>
-                      </Link>
-                      <Button variant="outline" onClick={() => handleDelete(client.id)}>🗑️ Eliminar</Button>
-                    </td>
+            {filteredClients.length === 0 ? <p>No hay clientes disponibles.</p> : 
+              <table className="min-w-full divide-y divide-gray-200 w-full">
+                <thead className={cn("bg-gray-50", "dark:bg-gray-800")}>  
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIF</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Correo Electrónico</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className={cn("bg-white divide-y divide-gray-200", "dark:bg-gray-900 dark:divide-gray-700")}>  
+                  {filteredClients.map(client => (
+                    <tr key={client.id}>
+                      <td className="px-6 py-4 whitespace-nowrap">{client.name}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{client.phone}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{client.nif}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{client.email}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <Link to={`/edit-client/${client.id}`}> 
+                          <Button className="text-white bg-gray-800 rounded p-2 hover:bg-gray-700 transition duration-200 mr-2">✏️ Editar</Button>
+                        </Link>
+                        <Button className="text-white bg-gray-800 rounded p-2 hover:bg-gray-700 transition duration-200">🗑️ Eliminar</Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            }
           </CardContent>
         </Card>
       </main>
